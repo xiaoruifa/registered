@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Xiào Shàn 肖善</title>
+    <link rel="shortcut icon" type="x-icon" href="https://img.icons8.com/?size=100&id=9267&format=png&color=000000">
+</head>
+  <style>
+    /* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Helvetica Neue', sans-serif;
+    background-color: hsl(228, 70%, 63%);
+    color: #1d2129;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: hsl(228, 24%, 16%);
+    width: 360px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Header */
+h2 {
+    font-size: 24px;
+    color: #1877f2;
+    margin-bottom: 20px;
+    user-select: none;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+label {
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    user-select: none;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #4b4f56;
+}
+
+input::placeholder {
+    color: black; /* Warna placeholder default */
+    font-weight: normal;
+}
+
+/* Warna input saat mengetik */
+input:focus {
+    border-color: transparent;
+    outline: none;
+    color: black; /* Warna teks saat mengetik */
+}
+
+button, .btn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    background-color: #1877f2;
+    color: #fff;
+    font-weight: bold;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    user-select: none;
+}
+
+button:hover, .btn:hover {
+    background-color: #165eab;
+}
+
+/* Links */
+.login-link {
+    margin-top: 15px;
+    font-size: 14px;
+    color: white;
+    font-weight: bold;
+    user-select: none;
+}
+
+.login-link a {
+    color: #1877f2;
+    text-decoration: none;
+}
+
+.forgot-password a {
+    font-size: 14px;
+    color: #1877f2;
+    text-decoration: none;
+}
+
+/* Styling for the Beranda page */
+#nama-user {
+    font-weight: bold;
+    color: #1877f2;
+}
+
+a {
+    text-decoration: none;
+}
+
+/* Styling untuk notifikasi */
+.notification {
+    position: fixed;
+    top: 20px;  /* Memindahkan notifikasi ke atas */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    z-index: 1000;
+    font-size: 14px;
+    user-select: none;
+}
+
+/* Notifikasi sukses */
+.notification.success {
+    background-color: #4CAF50;
+    user-select: none;
+}
+
+/* Notifikasi error */
+.notification.error {
+    background-color: #f44336;
+    user-select: none;
+}
+
+.is-admin {
+  position: absolute;
+  left: 118px;
+  
+  
+}
+
+  </style>
+<body>
+    <div class="container">
+        <h2>Login Ke Xiào Shàn 肖善 Website</h2>
+        <form id="form-login">
+            <div class="form-group">
+                <label for="login-username">Username/Email</label>
+                <input type="text" id="login-username" placeholder="Masukan Username/Email">
+            </div>
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" placeholder="Masukan Password">
+            </div>
+            <button type="submit" class="btn">Masuk</button>
+        </form>
+        <p class="login-link">Belum Mempunyai Akun? <a href="reg.html">Daftar</a></p>
+    </div>
+
+    <div id="notification" class="notification">
+        <span id="notification-message"></span>
+    </div>
+
+    <script>
+      // Fungsi untuk menangani registrasi
+document.getElementById("form-registrasi")?.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    let username = document.getElementById("username").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    // Validasi jika ada field yang kosong
+    if (!username || !email || !password) {
+        showNotification("Semua field harus diisi!", "error");
+        return;
+    }
+
+    // Validasi username: hanya huruf kecil, garis bawah dan tanpa spasi
+    const usernameRegex = /^[a-z_]+$/;
+    if (!usernameRegex.test(username)) {
+        showNotification("Username hanya boleh menggunakan huruf kecil, garis bawah (_), dan tanpa spasi.", "error");
+        return;
+    }
+
+    const emailRegex = /^[a-z@.]+$/;
+    if (!emailRegex.test(email)) {
+        showNotification("Email hanya boleh menggunakan huruf kecil, garis bawah (_), dan tanpa spasi.", "error");
+        return;
+    }
+
+    // Simpan data ke localStorage
+    localStorage.setItem("username", username);
+    localStorage.setItem("email", email);
+    localStorage.setItem("password", password);
+
+    // Tampilkan notifikasi berhasil registrasi
+    showNotification("Registrasi berhasil! Silakan login.", "success");
+
+    // Arahkan ke halaman login setelah registrasi
+    setTimeout(function() {
+        window.location.href = "log.html"; // Pengalihan ke login.html setelah 2 detik
+    }, 2000);  // Delay agar notifikasi sempat terlihat
+});
+
+// Fungsi untuk menangani login
+document.getElementById('form-login')?.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    // Ambil data input login
+    var username = document.getElementById('login-username').value;
+    var password = document.getElementById('login-password').value;
+
+    // Validasi jika ada field yang kosong
+    if (!username || !password) {
+        showNotification("Harap di isi terlebih dahulu !", "error");
+        return;
+    }
+
+    // Ambil data dari localStorage
+    var storedUsername = localStorage.getItem('username');
+    var storedEmail = localStorage.getItem('email'); // Tambahkan email
+    var storedPassword = localStorage.getItem('password');
+
+    // Validasi login dengan username atau email
+    if ((username === storedUsername || username === storedEmail) && password === storedPassword) {
+        // Login berhasil, arahkan ke halaman profil
+        window.location.href = 'profil.html';
+    } else {
+        // Login gagal
+        showNotification('Username, Email, atau Password salah', 'error');
+    }
+});
+
+// Fungsi untuk menampilkan notifikasi
+function showNotification(message, type) {
+    var notification = document.getElementById('notification');
+    var notificationMessage = document.getElementById('notification-message');
+    
+    notificationMessage.textContent = message;
+    
+    notification.classList.add(type);
+    notification.style.display = 'block';
+    
+    setTimeout(function() {
+        notification.style.opacity = '0';
+    }, 1000);
+    
+    setTimeout(function() {
+        notification.style.display = 'none';
+        notification.style.opacity = '1';
+        notification.classList.remove(type);
+    }, 1500);
+}
+
+    </script>
+</body>
+</html>
